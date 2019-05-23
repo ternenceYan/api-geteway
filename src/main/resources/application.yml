@@ -1,0 +1,36 @@
+eureka:
+  client:
+    service-url:
+      defaultZone: http://127.0.0.1:8761/eureka/
+spring:
+  application:
+    name: gateway
+  redis:
+    host: 127.0.0.1
+    port: 6379
+server:
+  port: 8083
+zuul:
+  routes:
+    api-a:
+      path: /myProduct/**
+      serviceId: product
+      #zuul默认下是无法经过API网关进行传递，将sensitiveHeaders设置为空，如下
+      sensitiveHeaders:
+    api-b:
+      path: /myOrder/**
+      serviceId: order
+    #api-c:访问http://localhost:8083/myapi/localfor会转发到local
+    api-c:
+      path: /localfor/**
+      url: forward:/local
+    api-d:
+      path: /mygate/**
+      serviceId: gateway
+  #属性可以忽略掉一个服务，不给某个服务设置映射规则
+  ignored-patterns: /**/hello/**
+  #增加前缀：http://localhost:8083/myapi/myProduct/product/findProduct
+  prefix: /myapi
+#    product: /myProduct2/**
+
+#redis配置===============
